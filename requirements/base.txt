@@ -1,0 +1,15 @@
+# Base requirements
+numpy>=1.24.0
+opencv-python-headless
+onnxruntime-gpu
+pyyaml
+scipy>=1.10.0
+# Install ONE of: faiss-cpu (CPU-only) or faiss-gpu (NVIDIA GPU recommended)
+faiss-cpu
+torch
+torchvision
+insightface
+fastapi
+uvicorn[standard]
+requests
+scikit-learn>=1.3.0
