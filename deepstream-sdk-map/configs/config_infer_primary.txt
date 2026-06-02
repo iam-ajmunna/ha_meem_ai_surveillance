@@ -1,0 +1,32 @@
+[property]
+gpu-id=0
+# 1. Paths to our ONNX model and the Engine it will build
+onnx-file=../models/scrfd_10g_bnkps.onnx
+model-engine-file=../models/scrfd_10g_bnkps.onnx_b3_gpu0_fp16.engine
+labelfile-path=labels_primary.txt
+
+# 2. Network Configuration
+# 0=Detector, 1=Classifier, 2=Segmentation
+network-type=0
+# 0=FP32, 1=INT8, 2=FP16
+network-mode=2
+# Must match the batch-size in our master config (2 cameras = 2)
+batch-size=2
+num-detected-classes=1 
+
+# 3. Model Architecture Details
+# 0=RGB, 1=BGR, 2=GRAY
+model-color-format=0
+maintain-aspect-ratio=1
+scaling-filter=0
+
+# 4. YOLO Custom Parsing (CRITICAL FOR YOLO MODELS)
+# DeepStream uses a custom C++ library to read YOLO ONNX outputs.
+parse-bbox-func-name=NvDsInferParseYolo
+custom-lib-path=/opt/nvidia/deepstream/deepstream/lib/libnvds_infercustomparser.so
+
+[class-attrs-all]
+# Detection thresholds
+pre-cluster-threshold=0.5
+topk=20
+nms-iou-threshold=0.45

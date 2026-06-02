@@ -1,0 +1,29 @@
+[property]
+gpu-id=0
+# 1. Paths to our ONNX Recognition Model
+onnx-file=../models/adaface.onnx
+model-engine-file=../models/adaface.onnx_b3_gpu0_fp16.engine
+labelfile-path=labels_secondary.txt
+
+# 2. Network Configuration
+# 1 = Classifier
+network-type=1
+network-mode=2
+batch-size=3
+# Change this to however many people/faces are in your gallery database
+num-detected-classes=512 
+
+# 3. Secondary Routing (CRITICAL)
+# This tells the recognizer to ONLY look at objects found by the Primary GIE (ID=1)
+operate-on-gie-id=1
+# This tells the recognizer to ONLY look at Class 0 (Assuming Class 0 is "Face")
+operate-on-class-ids=0
+
+# 4. Model Architecture Details
+model-color-format=0
+maintain-aspect-ratio=1
+scaling-filter=0
+
+# Classifier Specifics
+classifier-async-mode=1
+classifier-threshold=0.6

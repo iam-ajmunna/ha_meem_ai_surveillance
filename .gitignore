@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv
+venv/
+ENV/
+
+# Node (Frontend)
+node_modules/
+dist/
+.env
+
+# DeepStream / TensorRT
+*.engine
+trt_cache/
+deepstream-sdk-map/models/*.engine
+
+# Project-specific local files
+configs/cameras.yaml
+logs/
+snapshots/
+*.log
+*.jsonl
+dataset/
+*.npy
+*.pth
+*.pt
+*.onnx
+C:/
+
+# Model directories
+models/
+deepstream-sdk-map/models/
+
