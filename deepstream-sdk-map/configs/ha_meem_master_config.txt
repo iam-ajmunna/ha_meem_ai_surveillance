@@ -52,7 +52,7 @@ nvbuf-memory-type=0
 [primary-gie]
 enable=1
 gpu-id=0
-model-engine-file=../models/scrfd_10g_bnkps.onnx_b3_gpu0_fp16.engine
+model-engine-file=../models/scrfd_10g_bnkps.onnx_b1_gpu0_fp16.engine
 batch-size=1
 interval=0
 gie-unique-id=1
@@ -77,7 +77,7 @@ display-tracking-id=1
 # ========================================================
 [secondary-gie0]
 enable=1
-model-engine-file=../models/adaface.onnx_b3_gpu0_fp16.engine
+model-engine-file=../models/adaface.onnx_b1_gpu0_fp16.engine
 gpu-id=0
 batch-size=1
 gie-unique-id=2
@@ -96,7 +96,7 @@ font=Serif
 
 [sink0]
 enable=1
-type=2
+type=1
 sync=0
 gpu-id=0
 nvbuf-memory-type=0

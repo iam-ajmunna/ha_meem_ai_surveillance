@@ -2,7 +2,7 @@
 gpu-id=0
 # 1. Paths to our ONNX Recognition Model
 onnx-file=../models/adaface.onnx
-model-engine-file=../models/adaface.onnx_b3_gpu0_fp16.engine
+model-engine-file=../models/adaface.onnx_b1_gpu0_fp16.engine
 labelfile-path=labels_secondary.txt
 
 # 2. Network Configuration
