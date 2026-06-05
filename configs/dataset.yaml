@@ -1,7 +1,0 @@
-# Dataset configuration for external storage paths.
-# Ensure these paths point to your actual data storage outside the repository.
-
-dataset:
-  raw_frames: C:/Users/acer/Desktop/TDI/Ha-meem/FR/Face_images/raw_frames
-  aligned_faces: C:/Users/acer/Desktop/TDI/Ha-meem/FR/Face_images/aligned_faces
-  gallery_embeddings: C:/Users/acer/Desktop/TDI/Ha-meem/FR/Face_images/gallery_embeddings.npy
