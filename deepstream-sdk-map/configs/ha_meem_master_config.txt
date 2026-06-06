@@ -18,7 +18,7 @@ gpu-id=0
 enable=1
 type=4
 # RTSP URL from cameras.yaml
-uri=rtsp://admin:admin123@175.29.168.110:6222/cam/realmonitor?channel=31&subtype=0
+uri=${CAMERA_URL}
 num-sources=1
 gpu-id=0
 cudadec-memtype=0

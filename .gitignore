@@ -51,3 +51,7 @@ C:/
 models/
 deepstream-sdk-map/models/
 
+# Ignore everything in data/ except README.md
+data/*
+!data/README.md
+

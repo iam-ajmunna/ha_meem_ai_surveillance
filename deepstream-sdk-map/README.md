@@ -32,7 +32,7 @@ graph TD
     E -->|Metadata| F[Fakesink / Python Probes]
 ```
 
-1. **Source**: Decodes an RTSP camera stream (`rtsp://admin:admin123@175.29.168.110:6222/cam/realmonitor?channel=31&subtype=0`).
+1. **Source**: Decodes an RTSP camera stream (`${CAMERA_URL}`).
 2. **Primary AI (`nvinfer`)**: Runs hardware-accelerated inference using the **SCRFD face detector** (`scrfd_10g_bnkps.onnx`).
 3. **Custom Parser (`libnvdsinfer_custom_impl_scrfd.so`)**: Dynamically parses the raw output tensors of the SCRFD model (class scores and box offsets across strides 8, 16, and 32) into DeepStream bounding box metadata.
 4. **Tracker (`nvds_nvmultiobjecttracker`)**: Tracks detected faces frame-to-frame using the highly optimized NvDCF tracking algorithm.
