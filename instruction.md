@@ -32,8 +32,31 @@ chmod +x system_profiler_traditional.py system_profiler_deepstream.py
 
 ### 1. Traditional Pipeline Profiler (`system_profiler_traditional.py`)
 
-Run this profiler when benchmark testing the baseline CPU-based Python/OpenCV pipeline.
+Run this profiler when benchmarking the CPU-based Python/OpenCV pipeline. Because the profiler has a built-in auto-detection/wait feature, it can be started either **before** or **after** the pipeline is launched.
 
+#### Step-by-Step Running Sequence:
+1. **Open a separate terminal window/tab** (do not run it in the same terminal as the pipeline since both run interactively).
+2. **Activate your python environment** (e.g., conda environment `mlvision`):
+   ```bash
+   conda activate mlvision
+   ```
+3. **Start the profiler** (it will block and wait for the pipeline process to start):
+   ```bash
+   python system_profiler_traditional.py
+   ```
+4. **In your primary terminal, start the traditional pipeline** (as detailed in the root [README.md](file:///home/ajmunna/Workspace/TDI%20Workspace/Munna/ha_meem_ai_surveillance/README.md)):
+   ```bash
+   # Option A: Single camera / entry pipeline
+   py -m apps.entry_pipeline.main
+   
+   # Option B: Multi-camera grid pipeline
+   py -m apps.multi_pipeline.main
+   ```
+5. As soon as the pipeline starts, the profiler will detect the `main.py` entry point, begin sampling metrics, and output the performance report to `performance_traditional.md` when the duration (default: 60s) completes.
+
+*(Alternatively, if the pipeline is already running, starting the profiler in step 3 will immediately attach to it and begin profiling).*
+
+#### Command Examples:
 ```bash
 # Run with default settings (Search for 'main.py', sample for 60s, output to performance_traditional.md)
 python system_profiler_traditional.py
@@ -50,8 +73,46 @@ python system_profiler_traditional.py --output benchmarks/my_traditional_run.md
 
 ### 2. DeepStream Pipeline Profiler (`system_profiler_deepstream.py`)
 
-Run this profiler when benchmark testing the hardware-accelerated NVIDIA DeepStream pipeline.
+Run this profiler when benchmarking the hardware-accelerated NVIDIA DeepStream pipeline. 
 
+> [!IMPORTANT]
+> **Host Execution:** The DeepStream profiler must be run on the **Host** machine (not inside the Docker container) so that it can query the host system's GPU metrics (`nvidia-smi`) and retrieve the container context details from `/proc`.
+
+#### Step-by-Step Running Sequence:
+1. **Open a terminal on your host machine** (outside of the Docker container).
+2. **Start the profiler** depending on which application you plan to run inside the container:
+   * **To profile the Native C++ App (`deepstream-app`)**:
+     ```bash
+     python system_profiler_deepstream.py
+     ```
+   * **To profile the Custom Python Pipeline (`main.py`)**:
+     ```bash
+     python system_profiler_deepstream.py --search deepstream_pipeline/main.py
+     ```
+3. **In your primary terminal, start and run the DeepStream pipeline**:
+    - Enable display forwarding on your host and start the container:
+      ```bash
+      xhost +local:docker
+      docker run --gpus all -it --rm --net=host \
+          -e DISPLAY=$DISPLAY \
+          -v /tmp/.X11-unix:/tmp/.X11-unix \
+          -v "/home/ajmunna/Workspace/TDI Workspace/Munna/ha_meem_ai_surveillance:/app" \
+          nvcr.io/nvidia/deepstream:7.0-triton-multiarch bash
+      ```
+    - Inside the container, launch the target application:
+      * **For C++ App**:
+        ```bash
+        cd /app/deepstream-sdk-map/configs && deepstream-app -c ha_meem_master_config.txt
+        ```
+      * **For Python Pipeline**:
+        ```bash
+        python3 /app/apps/deepstream_pipeline/main.py
+        ```
+4. The host profiler will automatically detect the running process, map it to the Docker Container ID, record performance metrics, and output the report to `performance_deepstream.md` when the duration completes.
+
+*(Alternatively, if the DeepStream app is already running inside the container, running the host profiler will immediately target and profile it).*
+
+#### Command Examples:
 ```bash
 # Run with default settings (Search for 'deepstream-app' or 'deepstream', sample for 60s, output to performance_deepstream.md)
 python system_profiler_deepstream.py

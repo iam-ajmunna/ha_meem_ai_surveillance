@@ -126,15 +126,24 @@ docker run --gpus all --rm nvidia/cuda:12.0.0-base-ubuntu22.04 nvidia-smi
 Follow these steps in sequence to compile and run your DeepStream surveillance pipeline.
 
 ### Step 1: Start the Docker Container
-Run the following command from the root of your workspace (`/home/ajmunna/Workspace/TDI Workspace/Munna/ha_meem_ai_surveillance`) to launch a DeepStream 7.0 container:
+To support the live GUI display window, allow X11 connections from Docker on your host desktop first:
+```bash
+# Run this on your Host Ubuntu terminal
+xhost +local:docker
+```
+
+Then, run the following command from the root of your workspace (`/home/ajmunna/Workspace/TDI Workspace/Munna/ha_meem_ai_surveillance`) to launch a DeepStream 7.0 container with full GPU and display forwarding:
 
 ```bash
 docker run --gpus all -it --rm --net=host \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v "/home/ajmunna/Workspace/TDI Workspace/Munna/ha_meem_ai_surveillance:/app" \
     nvcr.io/nvidia/deepstream:7.0-triton-multiarch bash
 ```
 
 > [!NOTE]
+> * `-e DISPLAY=$DISPLAY` and `-v /tmp/.X11-unix:/tmp/.X11-unix`: Forwards the host's graphics server to the container to display the live camera view.
 > * `--gpus all`: Passes all host GPUs to the container.
 > * `--net=host`: Uses the host's network stack (crucial for RTSP stream inputs).
 > * `-v "...:/app"`: Mounts your workspace to `/app` inside the container for hot-reloading and direct edits.
@@ -159,15 +168,26 @@ g++ -shared -fPIC -o libnvdsinfer_custom_impl_scrfd.so \
 ---
 
 ### Step 3: Run the DeepStream Pipeline
-Once the parser compiles successfully, navigate to the config folder and start the application:
 
+Once the parser compiles successfully, choose one of the options below to execute the pipeline inside the container:
+
+#### Option A: C++ Native Application (Raw Performance & Tuning)
+Runs the compiled C++ pipeline using the default configuration files.
 ```bash
-# 1. Navigate to the config folder
+# 1. Navigate to the configs folder
 cd /app/deepstream-sdk-map/configs
 
 # 2. Launch the master configuration
 deepstream-app -c ha_meem_master_config.txt
 ```
+
+#### Option B: Python Custom Pipeline (Dynamic Visual Override & Console Logs)
+Runs our custom Python-based GStreamer pipeline. This extracts embeddings from the secondary inferencer crop and matches them against the FAISS identity database to display real-time console messages (`[camera_01] AUTHORIZED: a31_mazeda (0.812)`) and draw customized boxes on-screen (Green for Authorized, Red for Unknown).
+```bash
+# Start the Python pipeline
+python3 /app/apps/deepstream_pipeline/main.py
+```
+*(If no desktop screen is active or available, the Python pipeline automatically falls back from EGL rendering to fakesink to execute headlessly).*
 
 ---
 

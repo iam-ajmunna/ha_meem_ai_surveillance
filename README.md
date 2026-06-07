@@ -70,6 +70,9 @@ Follow these steps in order to set up your face recognition database and start t
    py -m apps.multi_pipeline.main
    ```
 
+6. **NVIDIA DeepStream Hardware Acceleration**:
+   For maximum performance, GPU video decoding, and sub-millisecond scaling using DeepStream, refer to the [DeepStream SDK Directory](file:///home/ajmunna/Workspace/TDI%20Workspace/Munna/ha_meem_ai_surveillance/deepstream-sdk-map/README.md) for startup, C++, and Python pipeline running instructions.
+
 5. **Other Components**:
 
    - **API Server**: `py -m apps.api_server.main`

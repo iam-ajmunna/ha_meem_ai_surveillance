@@ -124,7 +124,16 @@ def find_target_process(pattern):
                 continue
             # Match python processes executing our target script
             if "python" in proc.info['name'].lower() or "python" in cmdline[0].lower():
-                if any(pattern in arg for arg in cmdline[1:]):
+                is_match = False
+                for arg in cmdline[1:]:
+                    if pattern in arg:
+                        is_match = True
+                        break
+                    # If pattern is default 'main.py', also match module execution (e.g., -m apps.entry_pipeline.main)
+                    if pattern == "main.py" and (arg.endswith(".main") or "apps.entry_pipeline.main" in arg or "apps.multi_pipeline.main" in arg):
+                        is_match = True
+                        break
+                if is_match:
                     candidates.append(proc)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             continue

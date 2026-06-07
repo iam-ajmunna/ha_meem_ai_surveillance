@@ -10,9 +10,16 @@ labelfile-path=labels_primary.txt
 network-type=0
 # 0=FP32, 1=INT8, 2=FP16
 network-mode=2
-# Must match the batch-size in our master config (2 cameras = 2)
-batch-size=2
+# Must match the batch-size in our master config (1 active camera = 1)
+batch-size=1
 num-detected-classes=1 
+force-implicit-batch-dim=0
+gie-unique-id=1
+
+
+# Normalization parameters (InsightFace standard: Mean 127.5, Std 128)
+net-scale-factor=0.0078125
+offsets=127.5;127.5;127.5
 
 # 3. Model Architecture Details
 # 0=RGB, 1=BGR, 2=GRAY
@@ -27,6 +34,7 @@ custom-lib-path=../custom_parser/libnvdsinfer_custom_impl_scrfd.so
 
 [class-attrs-all]
 # Detection thresholds
-pre-cluster-threshold=0.5
+pre-cluster-threshold=0.4
 topk=20
 nms-iou-threshold=0.45
+

@@ -9,9 +9,17 @@ labelfile-path=labels_secondary.txt
 # 1 = Classifier
 network-type=1
 network-mode=2
-batch-size=3
+# Must match the batch-size in our master config (1 active camera = 1)
+batch-size=1
 # Change this to however many people/faces are in your gallery database
 num-detected-classes=512 
+output-tensor-meta=1
+gie-unique-id=2
+
+
+# Normalization parameters (InsightFace standard: Mean 127.5, Std 128)
+net-scale-factor=0.0078125
+offsets=127.5;127.5;127.5
 
 # 3. Secondary Routing (CRITICAL)
 # This tells the recognizer to ONLY look at objects found by the Primary GIE (ID=1)
@@ -27,3 +35,4 @@ scaling-filter=0
 # Classifier Specifics
 classifier-async-mode=1
 classifier-threshold=0.6
+

@@ -15,7 +15,7 @@ import psutil
 from datetime import datetime
 
 # Define target script/binary names to identify DeepStream processes
-DEFAULT_DEEPSTREAM_PATTERNS = ["deepstream-app", "deepstream"]
+DEFAULT_DEEPSTREAM_PATTERNS = ["deepstream-app"]
 
 def get_cpu_model():
     """Retrieves the CPU model name on Linux/Windows/macOS."""
@@ -123,12 +123,10 @@ def get_docker_container_info(pid):
             with open(cgroup_path, "r") as f:
                 content = f.read()
                 if "docker" in content or "containerd" in content or "sandbox" in content:
-                    for line in content.split("\n"):
-                        if "docker" in line or "containerd" in line:
-                            parts = line.strip().split("/")
-                            for part in parts:
-                                if len(part) == 64:
-                                    return f"Docker Container ({part[:12]})"
+                    import re
+                    match = re.search(r"([a-f0-9]{64})", content)
+                    if match:
+                        return f"Docker Container ({match.group(1)[:12]})"
                     return "Docker Container (Generic/WSL2)"
     except Exception:
         pass
@@ -148,6 +146,10 @@ def find_deepstream_processes(patterns):
             cmd_str = " ".join(cmdline)
             # Avoid matching profiling tools or conda run wrappers
             if "system_profiler" in cmd_str or "conda run" in cmd_str:
+                continue
+                
+            # Avoid matching docker client/launcher command processes
+            if "docker" in name.lower() or (cmdline and "docker" in cmdline[0].lower()):
                 continue
                 
             # Check name or command-line arguments for DeepStream indicators
@@ -306,6 +308,48 @@ def main():
     context_type = get_docker_container_info(target_pid)
     print(f"[INFO] Target environment context: {context_type}")
 
+    # Wait for the camera stream decoding to actively start
+    print("[INFO] Waiting for video decoding stream to start (NVDEC > 0% or thread count stabilization)...")
+    startup_timeout = 90  # seconds
+    start_wait = time.time()
+    decoding_started = False
+
+    while time.time() - start_wait < startup_timeout:
+        if not proc.is_running():
+            print(f"\n[WARNING] Process PID {target_pid} terminated during startup.")
+            break
+
+        gpus = get_detailed_gpu_metrics()
+        if gpus and gpus[0]["decoder_util"] is not None:
+            dec_util = gpus[0]["decoder_util"]
+            if dec_util > 0.0:
+                print(f"\n[SUCCESS] Video stream detected! NVDEC Utilization: {dec_util}%")
+                decoding_started = True
+                break
+        else:
+            # Fallback if NVDEC is not supported or no GPU detected: check thread count
+            try:
+                threads_count = len(proc.threads())
+                if threads_count > 12:
+                    # Let the pipeline stabilize for 2 seconds
+                    time.sleep(2)
+                    print(f"\n[SUCCESS] Active pipeline threads detected ({threads_count} threads). Starting benchmark.")
+                    decoding_started = True
+                    break
+            except Exception:
+                pass
+                
+        sys.stdout.write(".")
+        sys.stdout.flush()
+        time.sleep(1.0)
+
+    if not decoding_started and proc.is_running():
+        print("\n[WARNING] Video stream decoding not detected within timeout. Starting benchmark anyway...")
+
+    # Re-prime CPU sampling after startup delay to prevent compilation CPU spikes from skewing the run
+    proc.cpu_percent(interval=None)
+    psutil.cpu_percent(interval=None)
+
     print(f"[INFO] Beginning profiling for {args.duration} seconds (interval: {args.interval}s)...")
     print("Sampling status: [", end="", flush=True)
 
@@ -430,18 +474,21 @@ def main():
             f.write(f"| **GPU VRAM Usage** | {avg_gpu_vram:.1f} MB | {max_gpu_vram:.1f} MB |\n")
             
             # Decoder
-            dec_str = f"{avg_gpu_dec:.1f}%" if gpu_dec_history and gpu_dec_history[0] is not None else "N/A"
-            dec_peak = f"{max_gpu_dec:.1f}%" if gpu_dec_history and gpu_dec_history[0] is not None else "N/A"
+            dec_valid = any(x is not None for x in gpu_dec_history)
+            dec_str = f"{avg_gpu_dec:.1f}%" if dec_valid else "N/A"
+            dec_peak = f"{max_gpu_dec:.1f}%" if dec_valid else "N/A"
             f.write(f"| **GPU Decoder (NVDEC) Util %** | {dec_str} | {dec_peak} |\n")
             
             # Encoder
-            enc_str = f"{avg_gpu_enc:.1f}%" if gpu_enc_history and gpu_enc_history[0] is not None else "N/A"
-            enc_peak = f"{max_gpu_enc:.1f}%" if gpu_enc_history and gpu_enc_history[0] is not None else "N/A"
+            enc_valid = any(x is not None for x in gpu_enc_history)
+            enc_str = f"{avg_gpu_enc:.1f}%" if enc_valid else "N/A"
+            enc_peak = f"{max_gpu_enc:.1f}%" if enc_valid else "N/A"
             f.write(f"| **GPU Encoder (NVENC) Util %** | {enc_str} | {enc_peak} |\n")
             
             # Temperature
-            temp_str = f"{avg_gpu_temp:.1f}°C" if gpu_temp_history and gpu_temp_history[0] is not None else "N/A"
-            temp_peak = f"{max_gpu_temp:.1f}°C" if gpu_temp_history and gpu_temp_history[0] is not None else "N/A"
+            temp_valid = any(x is not None for x in gpu_temp_history)
+            temp_str = f"{avg_gpu_temp:.1f}°C" if temp_valid else "N/A"
+            temp_peak = f"{max_gpu_temp:.1f}°C" if temp_valid else "N/A"
             f.write(f"| **GPU Temperature** | {temp_str} | {temp_peak} |\n")
         else:
             f.write("| **GPU Utilization %** | N/A | N/A |\n")
@@ -479,17 +526,17 @@ def main():
             f.write("\n")
             
             # Decoder plot if supported
-            if gpu_dec_history and gpu_dec_history[0] is not None:
+            if gpu_dec_history and any(x is not None for x in gpu_dec_history):
                 f.write(generate_ascii_plot(gpu_dec_history, "GPU Decoder (NVDEC) Utilization % Over Time", y_suffix="%"))
                 f.write("\n")
             
             # Encoder plot if supported
-            if gpu_enc_history and gpu_enc_history[0] is not None:
+            if gpu_enc_history and any(x is not None for x in gpu_enc_history):
                 f.write(generate_ascii_plot(gpu_enc_history, "GPU Encoder (NVENC) Utilization % Over Time", y_suffix="%"))
                 f.write("\n")
                 
             # Temperature plot
-            if gpu_temp_history and gpu_temp_history[0] is not None:
+            if gpu_temp_history and any(x is not None for x in gpu_temp_history):
                 f.write(generate_ascii_plot(gpu_temp_history, "GPU Temperature (°C) Over Time", y_suffix="°C"))
                 f.write("\n")
 
