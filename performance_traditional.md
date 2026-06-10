@@ -1,6 +1,6 @@
 # Performance Profile Report: Baseline Surveillance Pipeline
 
-Generated on: `2026-06-07 19:49:39`  
+Generated on: `2026-06-10 11:11:04`  
 Profiling Duration: `60.0s` (Samples collected: `60`)
 
 ## 🖥️ System Hardware Specifications
@@ -18,12 +18,12 @@ Profiling Duration: `60.0s` (Samples collected: `60`)
 
 | Metric | Average Value | Peak Value |
 | :--- | :--- | :--- |
-| **Total System CPU %** | 68.4% | 88.5% |
-| **Total System RAM %** | 36.2% | 36.3% |
-| **Pipeline Process CPU %** | 231.3% | 318.0% |
-| **Pipeline Process RAM** | 832.4 MB | 834.5 MB |
-| **GPU Utilization %** | 26.4% | 39.0% |
-| **GPU VRAM Usage** | 489.4 MB | 514.0 MB |
+| **Total System CPU %** | 19.3% | 100.0% |
+| **Total System RAM %** | 15.0% | 19.5% |
+| **Pipeline Process CPU %** | 24.4% | 203.9% |
+| **Pipeline Process RAM** | 224.9 MB | 802.9 MB |
+| **GPU Utilization %** | 1.9% | 29.0% |
+| **GPU VRAM Usage** | 248.0 MB | 249.0 MB |
 
 ## 🌳 Process & Thread Hierarchy Tree
 > [!NOTE]
@@ -31,102 +31,104 @@ Profiling Duration: `60.0s` (Samples collected: `60`)
 > Memory (RAM) is shared globally by all threads within the main process address space.
 
 ```text
-└─ [PID: 35758] python (Main Process) | Avg CPU: 231.3% | Avg RAM: 832.4 MB (5.3%)
-   ├─ [TID: 35758] Main Thread            | Avg CPU: 9.4% | RAM: Shared
-   ├─ [TID: 35866] WorkerThread-35866     | Avg CPU: 99.0% | RAM: Shared
-   ├─ [TID: 35909] WorkerThread-35909     | Avg CPU: 97.5% | RAM: Shared
-   ├─ [TID: 35913] WorkerThread-35913     | Avg CPU: 6.0% | RAM: Shared
-   ├─ [TID: 35914] WorkerThread-35914     | Avg CPU: 5.8% | RAM: Shared
-   ├─ [TID: 35867] WorkerThread-35867     | Avg CPU: 5.6% | RAM: Shared
-   ├─ [TID: 35915] WorkerThread-35915     | Avg CPU: 5.5% | RAM: Shared
-   ├─ [TID: 35908] av:h264:df3            | Avg CPU: 0.9% | RAM: Shared
-   ├─ [TID: 35906] av:h264:df1            | Avg CPU: 0.9% | RAM: Shared
-   ├─ [TID: 35907] av:h264:df2            | Avg CPU: 0.8% | RAM: Shared
-   ├─ [TID: 35905] av:h264:df0            | Avg CPU: 0.8% | RAM: Shared
-   ├─ [TID: 35910] WorkerThread-35910     | Avg CPU: 0.2% | RAM: Shared
-   ├─ [TID: 35911] WorkerThread-35911     | Avg CPU: 0.2% | RAM: Shared
-   ├─ [TID: 35912] WorkerThread-35912     | Avg CPU: 0.2% | RAM: Shared
-   ├─ [TID: 35918] QXcbEventQueue         | Avg CPU: 0.1% | RAM: Shared
-   ├─ [TID: 35759] WorkerThread-35759     | Avg CPU: 0.0% | RAM: Shared
-   ├─ [TID: 35760] WorkerThread-35760     | Avg CPU: 0.0% | RAM: Shared
-   ├─ [TID: 35761] WorkerThread-35761     | Avg CPU: 0.0% | RAM: Shared
-   ├─ [TID: 35791] WorkerThread-35791     | Avg CPU: 0.0% | RAM: Shared
-   ├─ [TID: 35792] WorkerThread-35792     | Avg CPU: 0.0% | RAM: Shared
-   ├─ [TID: 35793] WorkerThread-35793     | Avg CPU: 0.0% | RAM: Shared
-   ├─ [TID: 35818] WorkerThread-35818     | Avg CPU: 0.0% | RAM: Shared
-   ├─ [TID: 35819] WorkerThread-35819     | Avg CPU: 0.0% | RAM: Shared
-   ├─ [TID: 35820] WorkerThread-35820     | Avg CPU: 0.0% | RAM: Shared
-   └─ [TID: 35880] WorkerThread-35880     | Avg CPU: 0.0% | RAM: Shared
+└─ [PID: 4866] python (Main Process) | Avg CPU: 24.4% | Avg RAM: 224.9 MB (1.4%)
+   ├─ [TID: 4866] Main Thread            | Avg CPU: 6.1% | RAM: Shared
+   ├─ [TID: 5523] WorkerThread-5523      | Avg CPU: 89.0% | RAM: Shared
+   ├─ [TID: 5466] WorkerThread-5466      | Avg CPU: 32.9% | RAM: Shared
+   ├─ [TID: 5467] WorkerThread-5467      | Avg CPU: 0.6% | RAM: Shared
+   ├─ [TID: 5520] av:h264:df1            | Avg CPU: 0.4% | RAM: Shared
+   ├─ [TID: 5522] av:h264:df3            | Avg CPU: 0.4% | RAM: Shared
+   ├─ [TID: 5521] av:h264:df2            | Avg CPU: 0.4% | RAM: Shared
+   ├─ [TID: 5519] av:h264:df0            | Avg CPU: 0.4% | RAM: Shared
+   ├─ [TID: 5529] WorkerThread-5529      | Avg CPU: 0.3% | RAM: Shared
+   ├─ [TID: 5531] WorkerThread-5531      | Avg CPU: 0.3% | RAM: Shared
+   ├─ [TID: 4870] WorkerThread-4870      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 4871] WorkerThread-4871      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 4872] WorkerThread-4872      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 4928] WorkerThread-4928      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 4929] WorkerThread-4929      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 4930] WorkerThread-4930      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5026] WorkerThread-5026      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5027] WorkerThread-5027      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5028] WorkerThread-5028      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5440] WorkerThread-5440      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5480] WorkerThread-5480      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5524] WorkerThread-5524      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5525] WorkerThread-5525      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5526] WorkerThread-5526      | Avg CPU: 0.0% | RAM: Shared
+   ├─ [TID: 5530] WorkerThread-5530      | Avg CPU: 0.0% | RAM: Shared
+   └─ [TID: 5579] QXcbEventQueue         | Avg CPU: 0.0% | RAM: Shared
 ```
 
 ## 🧵 Detailed Thread Breakdown
 
 | Thread ID (TID) | Thread Name | Average CPU % | Status / Description |
 | :--- | :--- | :--- | :--- |
-| `35758` | `Main Thread` | 9.4% | Main application event loop |
-| `35866` | `WorkerThread-35866` | 99.0% | Background worker thread |
-| `35909` | `WorkerThread-35909` | 97.5% | Background worker thread |
-| `35913` | `WorkerThread-35913` | 6.0% | Background worker thread |
-| `35914` | `WorkerThread-35914` | 5.8% | Background worker thread |
-| `35867` | `WorkerThread-35867` | 5.6% | Background worker thread |
-| `35915` | `WorkerThread-35915` | 5.5% | Background worker thread |
-| `35908` | `av:h264:df3` | 0.9% | Background worker thread |
-| `35906` | `av:h264:df1` | 0.9% | Background worker thread |
-| `35907` | `av:h264:df2` | 0.8% | Background worker thread |
-| `35905` | `av:h264:df0` | 0.8% | Background worker thread |
-| `35910` | `WorkerThread-35910` | 0.2% | Background worker thread |
-| `35911` | `WorkerThread-35911` | 0.2% | Background worker thread |
-| `35912` | `WorkerThread-35912` | 0.2% | Background worker thread |
-| `35918` | `QXcbEventQueue` | 0.1% | Background worker thread |
-| `35759` | `WorkerThread-35759` | 0.0% | Background worker thread |
-| `35760` | `WorkerThread-35760` | 0.0% | Background worker thread |
-| `35761` | `WorkerThread-35761` | 0.0% | Background worker thread |
-| `35791` | `WorkerThread-35791` | 0.0% | Background worker thread |
-| `35792` | `WorkerThread-35792` | 0.0% | Background worker thread |
-| `35793` | `WorkerThread-35793` | 0.0% | Background worker thread |
-| `35818` | `WorkerThread-35818` | 0.0% | Background worker thread |
-| `35819` | `WorkerThread-35819` | 0.0% | Background worker thread |
-| `35820` | `WorkerThread-35820` | 0.0% | Background worker thread |
-| `35880` | `WorkerThread-35880` | 0.0% | Background worker thread |
+| `4866` | `Main Thread` | 6.1% | Main application event loop |
+| `5523` | `WorkerThread-5523` | 89.0% | Background worker thread |
+| `5466` | `WorkerThread-5466` | 32.9% | Background worker thread |
+| `5467` | `WorkerThread-5467` | 0.6% | Background worker thread |
+| `5520` | `av:h264:df1` | 0.4% | Background worker thread |
+| `5522` | `av:h264:df3` | 0.4% | Background worker thread |
+| `5521` | `av:h264:df2` | 0.4% | Background worker thread |
+| `5519` | `av:h264:df0` | 0.4% | Background worker thread |
+| `5529` | `WorkerThread-5529` | 0.3% | Background worker thread |
+| `5531` | `WorkerThread-5531` | 0.3% | Background worker thread |
+| `4870` | `WorkerThread-4870` | 0.0% | Background worker thread |
+| `4871` | `WorkerThread-4871` | 0.0% | Background worker thread |
+| `4872` | `WorkerThread-4872` | 0.0% | Background worker thread |
+| `4928` | `WorkerThread-4928` | 0.0% | Background worker thread |
+| `4929` | `WorkerThread-4929` | 0.0% | Background worker thread |
+| `4930` | `WorkerThread-4930` | 0.0% | Background worker thread |
+| `5026` | `WorkerThread-5026` | 0.0% | Background worker thread |
+| `5027` | `WorkerThread-5027` | 0.0% | Background worker thread |
+| `5028` | `WorkerThread-5028` | 0.0% | Background worker thread |
+| `5440` | `WorkerThread-5440` | 0.0% | Background worker thread |
+| `5480` | `WorkerThread-5480` | 0.0% | Background worker thread |
+| `5524` | `WorkerThread-5524` | 0.0% | Background worker thread |
+| `5525` | `WorkerThread-5525` | 0.0% | Background worker thread |
+| `5526` | `WorkerThread-5526` | 0.0% | Background worker thread |
+| `5530` | `WorkerThread-5530` | 0.0% | Background worker thread |
+| `5579` | `QXcbEventQueue` | 0.0% | Background worker thread |
 
 ## 📈 Performance Utilization Over Time
 
 #### Pipeline Process CPU % Over Time
 ```text
-318.0% |              *                                   
-293.1% |             *                      *             
-268.2% |                                                  
-243.3% |                                                  
-218.5% |  **** ******  ************** ****** *************
-193.6% | *    *                                           
-168.7% |                             *                    
-143.8% |*                                                 
+203.9% |                                               *  
+174.8% |                                                **
+145.6% |                                                  
+116.5% |                                                  
+ 87.4% |                                              *   
+ 58.3% |                                      *           
+ 29.1% | *                                  *  *     *    
+  0.0% |* ********************************** *  *****     
        +--------------------------------------------------
         0s                    30s                    60s
 ```
 #### GPU Utilization % Over Time
 ```text
- 39.0% |    *                                    *        
- 34.1% |         * *  * *                                 
- 29.3% |     **             *    *  *       ** *    * *  *
- 24.4% | *           * *  ** ** *  * * * *        *    *  
- 19.6% |          * *    *     *  *   * * **  * *  * *    
- 14.7% |*       *                                       * 
-  9.9% |   *   *                                          
-  5.0% |  *                                               
+ 29.0% |    *                                             
+ 25.0% |                                                  
+ 21.0% |                                                  
+ 17.0% |                                                  
+ 13.0% |                                                  
+  9.0% |                                                  
+  5.0% |   *                                              
+  1.0% |***  *********************************************
        +--------------------------------------------------
         0s                    30s                    60s
 ```
 #### GPU VRAM Used (MB) Over Time
 ```text
-514.0 MB |      *                                           
-509.0 MB |     * *                                          
-504.0 MB |        **                                        
-499.0 MB |          *                 **                    
-494.0 MB |   *                 * ****                       
-489.0 MB |*   *      ********** *    *                      
-484.0 MB | **                           ***                 
-479.0 MB |                                 *****************
+249.0 MB |   **                                             
+248.9 MB |                                                  
+248.7 MB |                                                  
+248.6 MB |                                                  
+248.4 MB |                                                  
+248.3 MB |                                                  
+248.1 MB |                                                  
+248.0 MB |***  *********************************************
        +--------------------------------------------------
         0s                    30s                    60s
 ```

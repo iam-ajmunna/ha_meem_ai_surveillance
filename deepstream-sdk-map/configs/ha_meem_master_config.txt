@@ -4,8 +4,8 @@ perf-measurement-interval-sec=2
 
 [tiled-display]
 enable=1
-rows=1
-columns=1
+rows=2
+columns=2
 width=1920
 height=1080
 gpu-id=0
@@ -24,9 +24,17 @@ gpu-id=0
 cudadec-memtype=0
 
 [source1]
-enable=0
+enable=1
 type=4
-uri=rtsp://admin:YOUR_PASS@192.168.10.55:554/stream1
+uri=rtsp://admin:admin123@175.29.168.110:6222/cam/realmonitor?channel=32&subtype=0
+num-sources=1
+gpu-id=0
+cudadec-memtype=0
+
+[source2]
+enable=1
+type=4
+uri=rtsp://admin:admin123@175.29.168.110:6222/cam/realmonitor?channel=25&subtype=0
 num-sources=1
 gpu-id=0
 cudadec-memtype=0
@@ -37,8 +45,8 @@ cudadec-memtype=0
 [streammux]
 gpu-id=0
 live-source=1
-# batch-size set to 1 to match our active camera
-batch-size=1
+# batch-size set to 3 to match our 3 active cameras
+batch-size=3
 # CRITICAL: 40ms timeout. If a camera lags, drop the frame, DO NOT BLOCK.
 batched-push-timeout=40000
 width=1920
@@ -52,8 +60,8 @@ nvbuf-memory-type=0
 [primary-gie]
 enable=1
 gpu-id=0
-model-engine-file=../models/scrfd_10g_bnkps.onnx_b1_gpu0_fp16.engine
-batch-size=1
+model-engine-file=../models/scrfd_10g_bnkps.onnx_b3_gpu0_fp16.engine
+batch-size=3
 interval=0
 gie-unique-id=1
 nvbuf-memory-type=0
@@ -77,9 +85,9 @@ display-tracking-id=1
 # ========================================================
 [secondary-gie0]
 enable=1
-model-engine-file=../models/adaface.onnx_b1_gpu0_fp16.engine
+model-engine-file=../models/adaface.onnx_b16_gpu0_fp16.engine
 gpu-id=0
-batch-size=1
+batch-size=16
 gie-unique-id=2
 operate-on-gie-id=1
 operate-on-class-ids=0; # Class 0 from primary detector (Face)

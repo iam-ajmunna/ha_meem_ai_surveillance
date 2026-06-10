@@ -107,6 +107,30 @@ def get_thread_name(pid, tid):
             pass
     return "python-thread"
 
+def is_x11_window_open(window_title="Ha-Meem AI Surveillance"):
+    """Checks if an X11 window with the specified title is open on Linux."""
+    if platform.system() != "Linux":
+        return False
+    try:
+        # Try wmctrl
+        res = subprocess.run(["wmctrl", "-l"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if res.returncode == 0:
+            for line in res.stdout.splitlines():
+                if window_title.lower() in line.lower():
+                    return True
+    except Exception:
+        pass
+        
+    try:
+        # Try xdotool
+        res = subprocess.run(["xdotool", "search", "--name", window_title], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if res.returncode == 0 and res.stdout.strip():
+            return True
+    except Exception:
+        pass
+        
+    return False
+
 def find_target_process(pattern):
     """Searches for a Python process running a script matching pattern."""
     candidates = []
@@ -275,6 +299,46 @@ def main():
     thread_prev_times = {}  # tid -> (cpu_time, timestamp)
 
     # Prime psutil process CPU percent calculations (first call returns 0.0)
+    proc.cpu_percent(interval=None)
+    psutil.cpu_percent(interval=None)
+
+    # Wait for the camera window to open or pipeline threads to stabilize
+    print("[INFO] Waiting for camera window to open or pipeline threads to stabilize...")
+    startup_timeout = 90  # seconds
+    start_wait = time.time()
+    pipeline_started = False
+
+    while time.time() - start_wait < startup_timeout:
+        if not proc.is_running():
+            print(f"\n[WARNING] Process PID {target_pid} terminated during startup.")
+            break
+
+        # Check X11 window
+        if is_x11_window_open("Ha-Meem"):
+            print(f"\n[SUCCESS] Camera window detected via X11! Starting benchmark.")
+            pipeline_started = True
+            break
+
+        # Fallback: check thread count
+        try:
+            threads_count = len(proc.threads())
+            if threads_count > 8:
+                # Let the pipeline stabilize for 2 seconds
+                time.sleep(2)
+                print(f"\n[SUCCESS] Active pipeline threads detected ({threads_count} threads). Starting benchmark.")
+                pipeline_started = True
+                break
+        except Exception:
+            pass
+
+        sys.stdout.write(".")
+        sys.stdout.flush()
+        time.sleep(1.0)
+
+    if not pipeline_started and proc.is_running():
+        print("\n[WARNING] Camera window or active threads not detected within timeout. Starting benchmark anyway...")
+
+    # Re-prime CPU sampling after startup delay to prevent model loading spikes from skewing the run
     proc.cpu_percent(interval=None)
     psutil.cpu_percent(interval=None)
 

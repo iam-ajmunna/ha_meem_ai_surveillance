@@ -39,6 +39,8 @@ def _apply_env_overrides(config):
     overrides = {
         "CAMERA_01_URL": ("cameras", 0, "url"),
         "CAMERA_02_URL": ("cameras", 1, "url"),
+        "CAMERA_03_URL": ("cameras", 2, "url"),
+        "CAMERA_04_URL": ("cameras", 3, "url"),
     }
 
     for env_var, path in overrides.items():

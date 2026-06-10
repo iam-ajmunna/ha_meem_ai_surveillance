@@ -171,8 +171,10 @@ g++ -shared -fPIC -o libnvdsinfer_custom_impl_scrfd.so \
 
 Once the parser compiles successfully, choose one of the options below to execute the pipeline inside the container:
 
-#### Option A: C++ Native Application (Raw Performance & Tuning)
-Runs the compiled C++ pipeline using the default configuration files.
+#### Option A: C++ Native Application (Raw Performance & Tracking Only)
+Runs the compiled GStreamer pipeline natively in C++.
+> [!NOTE]
+> This option runs hardware-accelerated **face detection** and **tracking** (drawing bounding boxes with track IDs on screen), but it **does not identify the person's name** since the generic C++ application cannot read our Python FAISS gallery database. Use this option to benchmark raw GStreamer/TensorRT frame-rate performance.
 ```bash
 # 1. Navigate to the configs folder
 cd /app/deepstream-sdk-map/configs
@@ -181,10 +183,19 @@ cd /app/deepstream-sdk-map/configs
 deepstream-app -c ha_meem_master_config.txt
 ```
 
-#### Option B: Python Custom Pipeline (Dynamic Visual Override & Console Logs)
-Runs our custom Python-based GStreamer pipeline. This extracts embeddings from the secondary inferencer crop and matches them against the FAISS identity database to display real-time console messages (`[camera_01] AUTHORIZED: a31_mazeda (0.812)`) and draw customized boxes on-screen (Green for Authorized, Red for Unknown).
+#### Option B: Python Custom Pipeline (Full Identification, BBoxes & Logs)
+Runs our custom Python-based GStreamer pipeline. This is the **recommended** mode for complete face identification.
+> [!IMPORTANT]
+> This option runs **face detection, tracking, AND database identification**. It uses GStreamer pad probes to extract raw embeddings from AdaFace, matches them against the FAISS identity gallery database, dynamically labels the identified person's name on-screen, colors the boxes green (Authorized) or red (Unknown), and logs events/saves snapshots.
+
+##### 📦 Prerequisites (Run inside the container first):
+Before running the script inside the container, install the required Python packages:
 ```bash
-# Start the Python pipeline
+pip3 install opencv-python-headless faiss-cpu PyYAML python-dotenv
+```
+
+##### 🚀 Start the pipeline:
+```bash
 python3 /app/apps/deepstream_pipeline/main.py
 ```
 *(If no desktop screen is active or available, the Python pipeline automatically falls back from EGL rendering to fakesink to execute headlessly).*

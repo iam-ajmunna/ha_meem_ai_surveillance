@@ -2,7 +2,7 @@
 gpu-id=0
 # 1. Paths to our ONNX model and the Engine it will build
 onnx-file=../models/scrfd_10g_bnkps.onnx
-model-engine-file=../models/scrfd_10g_bnkps.onnx_b1_gpu0_fp16.engine
+model-engine-file=../models/scrfd_10g_bnkps.onnx_b3_gpu0_fp16.engine
 labelfile-path=labels_primary.txt
 
 # 2. Network Configuration
@@ -10,8 +10,8 @@ labelfile-path=labels_primary.txt
 network-type=0
 # 0=FP32, 1=INT8, 2=FP16
 network-mode=2
-# Must match the batch-size in our master config (1 active camera = 1)
-batch-size=1
+# Must match the batch-size in our master config (3 active cameras = 3)
+batch-size=3
 num-detected-classes=1 
 force-implicit-batch-dim=0
 gie-unique-id=1

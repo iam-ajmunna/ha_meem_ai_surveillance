@@ -2,15 +2,15 @@
 gpu-id=0
 # 1. Paths to our ONNX Recognition Model
 onnx-file=../models/adaface.onnx
-model-engine-file=../models/adaface.onnx_b1_gpu0_fp16.engine
+model-engine-file=../models/adaface.onnx_b16_gpu0_fp16.engine
 labelfile-path=labels_secondary.txt
 
 # 2. Network Configuration
 # 1 = Classifier
 network-type=1
 network-mode=2
-# Must match the batch-size in our master config (1 active camera = 1)
-batch-size=1
+# Must match the batch-size in our master config (16 for multi-face batching)
+batch-size=16
 # Change this to however many people/faces are in your gallery database
 num-detected-classes=512 
 output-tensor-meta=1
