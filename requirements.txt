@@ -1,29 +1,18 @@
-# Core & Numerics
-numpy==2.2.6
+
+# Core & Yaml Configurations
+numpy>=1.22.0,<2.0.0
 PyYAML==6.0.3
 
-# Vision & AI Inference
-opencv-python==4.13.0.92
-onnxruntime-gpu==1.23.2
-insightface==0.7.3
-scikit-learn==1.7.2
-supervision==0.27.0
-tensorrt-cu12==10.12.0.36
-faiss-cpu==1.13.2
+# Image & Vector Operations
+opencv-python-headless>=4.8.0.0
+faiss-cpu>=1.7.4
 
-# Web API & Bot
-fastapi==0.135.3
-uvicorn==0.44.0
-pydantic==2.13.0
-requests==2.33.1
-selenium==4.43.0
-pyautogui==0.9.54
+# Web API & Dotenv
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=2.0
+requests>=2.31.0
+python-dotenv==1.0.1
 
-# Development Tools
-pytest==9.0.3
-black==26.3.1
-flake8==7.3.0
-mypy==1.20.1
-
-# Environment & Config
-python-dotenv==1.2.2
+# CI/CD and Testing
+pytest>=7.0.0
