@@ -1,8 +1,8 @@
 # Performance Profile Report: DeepStream Hardware-Accelerated Pipeline
 
-Generated on: `2026-06-07 19:55:55`  
+Generated on: `2026-06-11 12:35:07`  
 Profiling Duration: `60.0s` (Samples collected: `60`)
-Running Environment: `Docker Container (81676daaaae2)`
+Running Environment: `Docker Container (9c57fccf4b2d)`
 
 ## 🖥️ System Hardware Specifications
 
@@ -19,15 +19,15 @@ Running Environment: `Docker Container (81676daaaae2)`
 
 | Metric | Average Value | Peak Value |
 | :--- | :--- | :--- |
-| **Total System CPU %** | 33.3% | 60.8% |
-| **Total System RAM %** | 42.2% | 42.5% |
-| **DeepStream Process CPU %** | 30.2% | 45.0% |
-| **DeepStream Process RAM** | 1912.5 MB | 1912.5 MB |
-| **GPU Utilization %** | 22.5% | 31.0% |
-| **GPU VRAM Usage** | 1023.0 MB | 1043.0 MB |
-| **GPU Decoder (NVDEC) Util %** | 3.5% | 4.0% |
+| **Total System CPU %** | 12.0% | 32.1% |
+| **Total System RAM %** | 26.1% | 26.4% |
+| **DeepStream Process CPU %** | 12.5% | 62.0% |
+| **DeepStream Process RAM** | 2087.1 MB | 2114.6 MB |
+| **GPU Utilization %** | 8.5% | 26.0% |
+| **GPU VRAM Usage** | 1175.2 MB | 1194.0 MB |
+| **GPU Decoder (NVDEC) Util %** | 1.6% | 25.0% |
 | **GPU Encoder (NVENC) Util %** | 0.0% | 0.0% |
-| **GPU Temperature** | 58.5°C | 60.0°C |
+| **GPU Temperature** | 50.2°C | 54.0°C |
 
 ## 🏎️ Hardware Offload Performance Comparison
 
@@ -39,63 +39,63 @@ Running Environment: `Docker Container (81676daaaae2)`
 
 ## ⚙️ Process Specs
 
-- **Process ID (PID)**: `38316`  
+- **Process ID (PID)**: `5049`  
 - **Process Name**: `deepstream-app`  
 - **Command Line**: `deepstream-app -c ha_meem_master_config.txt`  
-- **Avg CPU Usage**: `30.2%` (relative to a single core)  
-- **Avg RAM footprint**: `1912.5 MB` (`12.13%` of system RAM)  
+- **Avg CPU Usage**: `12.5%` (relative to a single core)  
+- **Avg RAM footprint**: `2087.1 MB` (`13.24%` of system RAM)  
 
 ## 📈 Performance Utilization Over Time
 
 #### DeepStream Process CPU % Over Time
 ```text
- 45.0% |   *                                              
- 38.6% |  *                     *                         
- 32.1% | *  **  **             * **             *         
- 25.7% |      **  *************    ************* ** ******
- 19.3% |                                           *      
- 12.9% |                                                  
-  6.4% |                                                  
-  0.0% |*                                                 
+ 62.0% | *                                                
+ 53.1% |  *                                               
+ 44.3% |                                                  
+ 35.4% |                                                  
+ 26.6% |                                *        *     *  
+ 17.7% |                             *   ** * *    *      
+  8.9% |     ***  **  *** *    *             * ** * *** **
+  0.0% |*  **   **  **   * **** ***** **   *              
        +--------------------------------------------------
         0s                    30s                    60s
 ```
 #### GPU Core Utilization % Over Time
 ```text
- 31.0% |                        *                         
- 29.4% |                                                  
- 27.9% |  **    *              *                          
- 26.3% |         *                                        
- 24.7% |    *                     *                       
- 23.1% |                                         * *      
- 21.6% | *   **   *      *   **  *  **** *     ** *  *    
- 20.0% |*      *   ****** ***      *    * *****     * ****
+ 26.0% |                                               *  
+ 22.4% |                                                  
+ 18.9% |                                *    *      *     
+ 15.3% |                             *         * * *    * 
+ 11.7% |           *   **                **   *   *   *  *
+  8.1% |                       *           **   *    *    
+  4.6% |   *  * *         **     *  *                     
+  1.0% |*** ** * ** ***  *  *** * **  **                  
        +--------------------------------------------------
         0s                    30s                    60s
 ```
 #### GPU VRAM Used (MB) Over Time
 ```text
-1043.0 MB |                                          *       
-1038.0 MB |     *******                             * **     
-1033.0 MB |            *                         ***    **   
-1028.0 MB | ** *                                             
-1023.0 MB |*  *                                              
-1018.0 MB |                                               ***
-1013.0 MB |             ****    ****   ****                  
-1008.0 MB |                 ****    ***    ******            
+1194.0 MB |                                ********          
+1159.0 MB |     ***************************        **********
+1124.0 MB |   **                                             
+1089.0 MB |  *                                               
+1054.0 MB |                                                  
+1019.0 MB | *                                                
+984.0 MB |                                                  
+949.0 MB |*                                                 
        +--------------------------------------------------
         0s                    30s                    60s
 ```
 #### GPU Decoder (NVDEC) Utilization % Over Time
 ```text
-  4.0% |* *    * ** **** * ** * **** ** * ** **** * ** ***
-  3.9% |                                                  
-  3.7% |                                                  
-  3.6% |                                                  
-  3.4% |                                                  
-  3.3% |                                                  
-  3.1% |                                                  
-  3.0% | * **** *  *    * *  * *    *  * *  *    * *  *   
+ 25.0% |*                                                 
+ 21.4% |                                                  
+ 17.9% |                                                  
+ 14.3% |                                                  
+ 10.7% |                                                  
+  7.1% |                                                  
+  3.6% |                                               *  
+  0.0% | ********************************************** **
        +--------------------------------------------------
         0s                    30s                    60s
 ```
@@ -114,14 +114,14 @@ Running Environment: `Docker Container (81676daaaae2)`
 ```
 #### GPU Temperature (°C) Over Time
 ```text
- 60.0°C |    *                                             
- 59.6°C |                                                  
- 59.1°C |                                                  
- 58.7°C |   *                    * * **********************
- 58.3°C |                                                  
- 57.9°C | **  ******************* * *                      
- 57.4°C |                                                  
- 57.0°C |*                                                 
+ 54.0°C |                                                * 
+ 53.1°C |                                                  
+ 52.3°C |                                               * *
+ 51.4°C |                                         **** *   
+ 50.6°C |                                *********    *    
+ 49.7°C | *            ***     **********                  
+ 48.9°C |* ************   *****                            
+ 48.0°C |                                                  
        +--------------------------------------------------
         0s                    30s                    60s
 ```

@@ -150,16 +150,23 @@ docker run --gpus all -it --rm --net=host \
 
 ---
 
-### Step 2: Compile the Custom Parser (Inside Container)
-The custom parser decodes output bounding boxes and scores from the SCRFD model. If you modify `custom_parser/nvdsinfer_custom_parser_scrfd.cpp` on your host, compile the C++ source file into a shared object (`.so`) inside the running container:
+### Step 2: Compile the Custom Parsers (Inside Container)
+DeepStream relies on custom C++ shared libraries (`.so`) to decode the face bounding boxes (SCRFD) and match embedding outputs to names (AdaFace) inside `deepstream-app`. Compile these files inside your running container:
 
 ```bash
 # 1. Navigate to the parser folder
 cd /app/deepstream-sdk-map/custom_parser
 
-# 2. Compile the parser
+# 2. Compile the SCRFD Bounding Box Parser
 g++ -shared -fPIC -o libnvdsinfer_custom_impl_scrfd.so \
     nvdsinfer_custom_parser_scrfd.cpp \
+    -I/opt/nvidia/deepstream/deepstream/sources/includes \
+    -I/usr/local/cuda/include \
+    -O3 -std=c++17
+
+# 3. Compile the AdaFace Face Recognition/Matching Parser
+g++ -shared -fPIC -o libnvdsinfer_custom_impl_adaface.so \
+    nvdsinfer_custom_parser_adaface.cpp \
     -I/opt/nvidia/deepstream/deepstream/sources/includes \
     -I/usr/local/cuda/include \
     -O3 -std=c++17

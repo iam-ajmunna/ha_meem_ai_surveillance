@@ -9,7 +9,6 @@ if sys.platform == "win32":
         os.environ["PATH"] = trt_lib_dir + os.pathsep + os.environ.get("PATH", "")
 
 import numpy as np
-import onnxruntime as ort
 from typing import List
 from .base_detector import BaseDetector
 from .face import Face
@@ -57,6 +56,7 @@ class SCRFDDetector(BaseDetector):
 
         # Inject our TRT-enabled ORT session, replacing the default CUDA one.
         # This is done before prepare() so the anchor grid is built on the correct session.
+        import onnxruntime as ort
         self.detector.session = ort.InferenceSession(model_path, providers=providers)
 
         self.detector.prepare(

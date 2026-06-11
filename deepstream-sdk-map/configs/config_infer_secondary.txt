@@ -4,6 +4,8 @@ gpu-id=0
 onnx-file=../models/adaface.onnx
 model-engine-file=../models/adaface.onnx_b16_gpu0_fp16.engine
 labelfile-path=labels_secondary.txt
+parse-classifier-func-name=NvDsInferClassifyCustomAdaFace
+custom-lib-path=../custom_parser/libnvdsinfer_custom_impl_adaface.so
 
 # 2. Network Configuration
 # 1 = Classifier
