@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  pipeline:
+    image: ha-meem-jetson:latest
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.jetson
+    container_name: ha-meem-pipeline
+    runtime: nvidia
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - LOG_FILE=/app/logs/events.jsonl
+    volumes:
+      # X11 display socket for GUI rendering if screen attached
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      # Site-specific camera config (not committed in git)
+      - /opt/ha-meem/configs/cameras.yaml:/app/configs/cameras.yaml
+      # Local environment variables
+      - /opt/ha-meem/.env:/app/.env
+      # Heavy model files and TensorRT engines stored on NVMe
+      - /opt/ha-meem/models:/app/models
+      # Location for built engines
+      - /opt/ha-meem/engines:/app/engines
+      # Target folders for alerts snapshots and event logs
+      - /opt/ha-meem/snapshots:/app/snapshots
+      - /opt/ha-meem/logs:/app/logs
+    restart: unless-stopped
+    stop_grace_period: 30s
+    command: python3 apps/deepstream_pipeline/main.py
+
+  api:
+    image: ha-meem-jetson:latest
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.jetson
+    container_name: ha-meem-api
+    network_mode: host
+    environment:
+      - API_PORT=8000
+      - LOG_FILE=/app/logs/events.jsonl
+    volumes:
+      - /opt/ha-meem/.env:/app/.env
+      - /opt/ha-meem/logs:/app/logs
+      - /opt/ha-meem/snapshots:/app/snapshots
+    restart: unless-stopped
+    command: python3 apps/api_server/main.py

@@ -36,6 +36,10 @@ deepstream-sdk-map/models/*.engine
 
 # Project-specific local files
 configs/cameras.yaml
+configs/thresholds.yaml
+deploy/jetson/.env
+deploy/central/.env
+**/.env
 logs/
 snapshots/
 *.log
@@ -45,6 +49,8 @@ dataset/
 *.pth
 *.pt
 *.onnx
+*.engine
+*.db
 C:/
 
 # Model directories

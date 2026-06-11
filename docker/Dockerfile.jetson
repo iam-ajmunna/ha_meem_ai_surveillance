@@ -1,0 +1,51 @@
+# Production Dockerfile for NVIDIA Jetson Edge Devices (ARM64)
+# Uses DeepStream 7.0 with Triton support (multiarch)
+FROM nvcr.io/nvidia/deepstream:7.0-triton-multiarch
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    g++ \
+    make \
+    python3-pip \
+    python3-dev \
+    libglib2.0-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install python dependencies for DeepStream pipeline and API server
+# We use faiss-cpu and opencv-python-headless to keep the image lightweight
+RUN pip3 install --no-cache-dir \
+    "numpy>=1.22.0,<2.0.0" \
+    faiss-cpu \
+    opencv-python-headless \
+    PyYAML \
+    python-dotenv \
+    fastapi \
+    uvicorn \
+    pydantic \
+    requests
+
+# Copy project files into the container
+COPY . .
+
+# Compile custom C++ parsers (SCRFD detector and AdaFace classifier)
+# Paths are compiled to match deepstream-sdk-map configs references
+RUN g++ -shared -fPIC -o /app/deepstream-sdk-map/custom_parser/libnvdsinfer_custom_impl_scrfd.so \
+    /app/deepstream-sdk-map/custom_parser/nvdsinfer_custom_parser_scrfd.cpp \
+    -I/opt/nvidia/deepstream/deepstream/sources/includes \
+    -I/usr/local/cuda/include \
+    -O3 -std=c++17
+
+RUN g++ -shared -fPIC -o /app/deepstream-sdk-map/custom_parser/libnvdsinfer_custom_impl_adaface.so \
+    /app/deepstream-sdk-map/custom_parser/nvdsinfer_custom_parser_adaface.cpp \
+    -I/opt/nvidia/deepstream/deepstream/sources/includes \
+    -I/usr/local/cuda/include \
+    -O3 -std=c++17
+
+# Expose FastAPI server port
+EXPOSE 8000
+
+# Default command (overridden in compose file)
+CMD ["python3", "apps/deepstream_pipeline/main.py"]
