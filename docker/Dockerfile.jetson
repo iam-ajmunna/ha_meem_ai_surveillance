@@ -31,15 +31,15 @@ RUN pip3 install --no-cache-dir \
 COPY . .
 
 # Compile custom C++ parsers (SCRFD detector and AdaFace classifier)
-# Paths are compiled to match deepstream-sdk-map configs references
-RUN g++ -shared -fPIC -o /app/deepstream-sdk-map/custom_parser/libnvdsinfer_custom_impl_scrfd.so \
-    /app/deepstream-sdk-map/custom_parser/nvdsinfer_custom_parser_scrfd.cpp \
+# Paths are compiled to match root-level custom_parser and configs references
+RUN g++ -shared -fPIC -o /app/custom_parser/libnvdsinfer_custom_impl_scrfd.so \
+    /app/custom_parser/nvdsinfer_custom_parser_scrfd.cpp \
     -I/opt/nvidia/deepstream/deepstream/sources/includes \
     -I/usr/local/cuda/include \
     -O3 -std=c++17
 
-RUN g++ -shared -fPIC -o /app/deepstream-sdk-map/custom_parser/libnvdsinfer_custom_impl_adaface.so \
-    /app/deepstream-sdk-map/custom_parser/nvdsinfer_custom_parser_adaface.cpp \
+RUN g++ -shared -fPIC -o /app/custom_parser/libnvdsinfer_custom_impl_adaface.so \
+    /app/custom_parser/nvdsinfer_custom_parser_adaface.cpp \
     -I/opt/nvidia/deepstream/deepstream/sources/includes \
     -I/usr/local/cuda/include \
     -O3 -std=c++17

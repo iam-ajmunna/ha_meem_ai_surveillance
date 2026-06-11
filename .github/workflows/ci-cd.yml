@@ -45,7 +45,7 @@ jobs:
               - 'apps/deepstream_pipeline/**'
               - 'apps/api_server/**'
               - 'configs/**'
-              - 'deepstream-sdk-map/**'
+              - 'custom_parser/**'
               - 'docker/Dockerfile.jetson'
               - 'requirements.txt'
             central:
