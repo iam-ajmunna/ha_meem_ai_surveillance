@@ -162,6 +162,40 @@ Central Developer   ──► Push to 'main'
                                         Send 🚨 Telegram
 ```
 
+### ⚙️ GitHub & Runner Environment Setup
+
+To enable this automated deployment pipeline, perform the following setup steps:
+
+#### 1. Configure the Self-Hosted Runner (Central Server)
+The workflow runs on a **self-hosted runner** registered on a central server in your network:
+1. Go to your GitHub Repository -> **Settings** -> **Actions** -> **Runners** -> **New self-hosted runner**.
+2. Select **Linux** and follow the instructions to download, configure, and start the runner service on your central server.
+
+#### 2. Configure SSH Access from Central Server to Jetsons
+The self-hosted runner must be able to SSH passwordlessly into `jetson-a` and `jetson-b` as the `ha-meem` user:
+1. On the central server (as the system user running the GitHub Actions runner service, e.g., `github-runner`), generate an SSH key if one does not exist:
+   ```bash
+   ssh-keygen -t ed25519 -C "github-runner@central-server"
+   ```
+2. Copy the public key to both Jetson devices:
+   ```bash
+   ssh-copy-id ha-meem@jetson-a
+   ssh-copy-id ha-meem@jetson-b
+   ```
+3. Verify passwordless SSH connectivity from the central server:
+   ```bash
+   ssh ha-meem@jetson-a "echo 'Connection to Jetson A successful'"
+   ssh ha-meem@jetson-b "echo 'Connection to Jetson B successful'"
+   ```
+   *Note: Ensure DNS resolution or `/etc/hosts` mappings are configured on the central server for `jetson-a` and `jetson-b`.*
+
+#### 3. Set Up GitHub Repository Secrets
+To receive deployment alerts and status updates, configure these secrets in your repository:
+1. Navigate to **Settings** -> **Secrets and variables** -> **Actions**.
+2. Under **Repository secrets**, click **New repository secret** and add:
+   * `TELEGRAM_TOKEN`: The API token obtained from `@BotFather` for your Telegram notifier bot.
+   * `ALERT_CHAT_ID`: The Telegram chat ID or channel ID where status alerts should be sent.
+
 ### Safe Deployment Guards
 1. **Working Hours Lock**: Deployments are blocked during working shifts (06:00–21:00) to prevent downtime. To deploy emergency hotfixes, run manually on the host:
    ```bash
