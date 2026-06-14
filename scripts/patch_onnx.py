@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 def patch_model():
-    model_paths = ["models/scrfd_10g_bnkps.onnx", "deepstream-sdk-map/models/scrfd_10g_bnkps.onnx"]
+    model_paths = ["models/scrfd_10g_bnkps.onnx"]
     
     for path in model_paths:
         if not os.path.exists(path):

@@ -22,7 +22,7 @@ def main():
     
     print("Setting pgie properties...")
     pgie.set_property("unique-id", 1)
-    pgie.set_property("config-file-path", os.path.abspath("deepstream-sdk-map/configs/config_infer_primary.txt"))
+    pgie.set_property("config-file-path", os.path.abspath("cpp_deepstream_pipeline/configs/config_infer_primary.txt"))
     
     print("Setting tracker properties...")
     tracker.set_property("tracker-width", 640)
@@ -34,7 +34,7 @@ def main():
     # Test setting process-mode before config-file-path
     # sgie.set_property("process-mode", 2)
     sgie.set_property("unique-id", 2)
-    sgie.set_property("config-file-path", os.path.abspath("deepstream-sdk-map/configs/config_infer_secondary.txt"))
+    sgie.set_property("config-file-path", os.path.abspath("cpp_deepstream_pipeline/configs/config_infer_secondary.txt"))
     
     print("Transitioning pipeline to PLAYING state...")
     ret = pipeline.set_state(Gst.State.PLAYING)

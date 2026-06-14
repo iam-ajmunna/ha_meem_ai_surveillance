@@ -155,7 +155,7 @@ DeepStream relies on custom C++ shared libraries (`.so`) to decode the face boun
 
 ```bash
 # 1. Navigate to the parser folder
-cd /app/deepstream-sdk-map/custom_parser
+cd /app/cpp_deepstream_pipeline/custom_parser
 
 # 2. Compile the SCRFD Bounding Box Parser
 g++ -shared -fPIC -o libnvdsinfer_custom_impl_scrfd.so \
@@ -184,7 +184,7 @@ Runs the compiled GStreamer pipeline natively in C++.
 > This option runs hardware-accelerated **face detection** and **tracking** (drawing bounding boxes with track IDs on screen), but it **does not identify the person's name** since the generic C++ application cannot read our Python FAISS gallery database. Use this option to benchmark raw GStreamer/TensorRT frame-rate performance.
 ```bash
 # 1. Navigate to the configs folder
-cd /app/deepstream-sdk-map/configs
+cd /app/cpp_deepstream_pipeline/configs
 
 # 2. Launch the master configuration
 deepstream-app -c ha_meem_master_config.txt
@@ -203,7 +203,7 @@ pip3 install opencv-python-headless faiss-cpu PyYAML python-dotenv
 
 ##### 🚀 Start the pipeline:
 ```bash
-python3 /app/apps/deepstream_pipeline/main.py
+python3 /app/python_deepstream_pipeline/main.py
 ```
 *(If no desktop screen is active or available, the Python pipeline automatically falls back from EGL rendering to fakesink to execute headlessly).*
 

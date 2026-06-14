@@ -16,7 +16,7 @@ from gi.repository import Gst, GLib
 from datetime import datetime
 
 # Append workspace path to import core libraries
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from core.config import load_config, load_merged_configs
 from core.database.face_database import FaceDatabase
 from core.fusion.aggregator import EmbeddingAggregator
@@ -278,11 +278,11 @@ def main():
     streammux.set_property("gpu-id", 0)
     streammux.set_property("nvbuf-memory-type", 0)  # CUDA Device memory (NVMM)
 
-    pgie.set_property("config-file-path", os.path.abspath("deepstream-sdk-map/configs/config_infer_primary.txt"))
+    pgie.set_property("config-file-path", os.path.abspath("cpp_deepstream_pipeline/configs/config_infer_primary.txt"))
     pgie.set_property("unique-id", 1)
     pgie.set_property("gpu-id", 0)
 
-    sgie.set_property("config-file-path", os.path.abspath("deepstream-sdk-map/configs/config_infer_secondary.txt"))
+    sgie.set_property("config-file-path", os.path.abspath("cpp_deepstream_pipeline/configs/config_infer_secondary.txt"))
     sgie.set_property("process-mode", 2)  # Secondary Mode
     sgie.set_property("unique-id", 2)
     sgie.set_property("gpu-id", 0)
@@ -290,7 +290,7 @@ def main():
     tracker.set_property("tracker-width", 640)
     tracker.set_property("tracker-height", 384)
     tracker.set_property("ll-lib-file", "/opt/nvidia/deepstream/deepstream/lib/libnvds_nvmultiobjecttracker.so")
-    tracker.set_property("ll-config-file", os.path.abspath("deepstream-sdk-map/configs/config_tracker_NvDCF_perf.yml"))
+    tracker.set_property("ll-config-file", os.path.abspath("cpp_deepstream_pipeline/configs/config_tracker_NvDCF_perf.yml"))
     tracker.set_property("gpu-id", 0)
 
     # Configure grid layout inside tiler

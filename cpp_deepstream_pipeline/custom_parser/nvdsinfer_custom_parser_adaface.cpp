@@ -23,7 +23,7 @@ static bool load_gallery() {
     std::vector<std::string> paths = {
         "gallery_embeddings.txt",
         "../configs/gallery_embeddings.txt",
-        "/app/deepstream-sdk-map/configs/gallery_embeddings.txt"
+        "/app/cpp_deepstream_pipeline/configs/gallery_embeddings.txt"
     };
     
     std::ifstream file;

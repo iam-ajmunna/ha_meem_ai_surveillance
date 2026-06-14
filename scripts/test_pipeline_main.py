@@ -84,16 +84,16 @@ def main():
     streammux.set_property("live-source", 1)
     
     pgie.set_property("unique-id", 1)
-    pgie.set_property("config-file-path", os.path.abspath("deepstream-sdk-map/configs/config_infer_primary.txt"))
+    pgie.set_property("config-file-path", os.path.abspath("cpp_deepstream_pipeline/configs/config_infer_primary.txt"))
     
     sgie.set_property("process-mode", 2) # Secondary
     sgie.set_property("unique-id", 2)
-    sgie.set_property("config-file-path", os.path.abspath("deepstream-sdk-map/configs/config_infer_secondary.txt"))
+    sgie.set_property("config-file-path", os.path.abspath("cpp_deepstream_pipeline/configs/config_infer_secondary.txt"))
     
     tracker.set_property("tracker-width", 640)
     tracker.set_property("tracker-height", 384)
     tracker.set_property("ll-lib-file", "/opt/nvidia/deepstream/deepstream/lib/libnvds_nvmultiobjecttracker.so")
-    tracker.set_property("ll-config-file", os.path.abspath("deepstream-sdk-map/configs/config_tracker_NvDCF_perf.yml"))
+    tracker.set_property("ll-config-file", os.path.abspath("cpp_deepstream_pipeline/configs/config_tracker_NvDCF_perf.yml"))
     tracker.set_property("gpu-id", 0)
     
     # Add Elements to Pipeline
