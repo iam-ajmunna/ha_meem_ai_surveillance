@@ -18,4 +18,4 @@ COPY . .
 # Pre-create TRT engine cache directory (engines are compiled on first run)
 RUN mkdir -p trt_cache
 
-CMD ["python", "apps/entry_pipeline/main.py"]
+CMD ["python3", "python_deepstream_pipeline/main.py"]

@@ -4,76 +4,42 @@ A professional-grade AI surveillance system for real-time inference and data man
 
 ## Structure
 
-- `apps/`: High-level applications (inference pipeline, dataset tools).
-- `core/`: Core AI modules (detection, recognition, tracking, fusion, quality).
-- `models/`: Model storage and exported ONNX/TensorRT engines.
-- `configs/`: Configuration for models, cameras, and thresholds.
-- `experiments/`: Research and experiment scripts.
-- `tests/`: Testing suite.
-- `docker/`: Deployment configurations.
+- `python_deepstream_pipeline/`: Hybrid Python GStreamer application pipeline (configurations, main script, custom parser source).
+- `cpp_deepstream_pipeline/`: DeepStream Native C++ application pipeline (configurations, custom parser source).
+- `apps/dataset_tools/`: Database utility scripts for face alignment and gallery embedding generation.
+- `core/`: Shared core libraries (detection, recognition, FAISS database, fusion tracker).
+- `models/`: Centralized model storage for SCRFD and AdaFace ONNX files and TensorRT engines.
+- `configs/`: YAML configurations for RTSP streams and thresholds.
+- `docker/`: Dockerfile build environment for target Triton container.
+- `scripts/`: Benchmark, calibration, and presentation helper utilities.
 - `requirements.txt`: Python dependencies.
 
 ## Prerequisites
 
-### 1. External Software
-- **Python 3.10.11**: [Download here](https://www.python.org/downloads/release/python-31011/)
-- **Visual Studio Build Tools**: [Download here](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
-- **CUDA Toolkit 12.6**: [Download Archive](https://developer.nvidia.com/cuda-12-6-0-download-archive).
-- **cuDNN 9.10.0**: [Direct Download](https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/windows-x86_64/cudnn-windows-x86_64-9.10.0.56_cuda12-archive.zip).
+### 1. External Software (For running in CUDA/Linux environments)
+- **NVIDIA Driver**: Installed on Host OS.
+- **NVIDIA Container Toolkit**: For Docker GPU acceleration.
+- **DeepStream SDK 7.0**: Triton multiarch Docker container (`nvcr.io/nvidia/deepstream:7.0-triton-multiarch`).
 
 ### 2. Models & Data
-- **Models & Dataset**: Private Google Drive (Request access from project owner).
-  - Place model weights in `models/`.
-  - Place datasets in `data/`.
+- Place model weights (`scrfd_10g_bnkps.onnx`, `adaface.onnx`) in the root `models/` directory.
+- Place dataset folders (for gallery building) in `data/`.
 
-## Setup
+## Setup & Running the Pipelines
 
-1. **First installation with**:
+### Step 1: Ingest & Build the Identity Gallery
+1. **Extract Faces**: Detects and crops faces from raw input images to create a clean aligned faces dataset:
    ```bash
-   git clone https://github.com/laurent-rodz/ha_meem_ai_surveillance.git
-   cd ha_meem_ai_surveillance
-   py -m venv .venv
-   .\.venv\Scripts\activate
+   python3 -m apps.dataset_tools.extract_faces
+   ```
+2. **Build Gallery**: Generates 512-d embeddings for the extracted faces and saves them into the gallery database:
+   ```bash
+   python3 -m apps.dataset_tools.build_gallery
    ```
 
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Step 2: Running the Pipelines (Inside the DeepStream Container)
 
-4. **Configuration (Mandatory)**:
-   Update the absolute data paths in the following files to match your local setup:
-   - **`configs/cameras.yaml`**: Update `url` for RTSP streams or local video files.
-   - **`configs/default.yaml`**: Update the `models` paths to point to your `.onnx` files, and the `dataset` paths for raw frames and embeddings.
-
-## Running the System
-
-Follow these steps in order to set up your face recognition database and start the surveillance:
-
-1. **Extract Faces**: Detects and crops faces from your raw input images to create a training/gallery dataset.
-   ```bash
-   py -m apps.dataset_tools.extract_faces
-   ```
-
-2. **Build Gallery**: Generates 512-d embeddings for the extracted faces and saves them into the `gallery_embeddings.npy` database.
-   ```bash
-   py -m apps.dataset_tools.build_gallery
-   ```
-
-3. **Inference Pipeline**: Starts the real-time AI surveillance system (Detector -> Tracker -> Recognizer).
-   ```bash
-   py -m apps.entry_pipeline.main
-   ```
-
-4. **Multi-Camera Pipeline**: Starts the surveillance system across all enabled cameras defined in `configs/cameras.yaml` in a grid view.
-   ```bash
-   py -m apps.multi_pipeline.main
-   ```
-
-6. **NVIDIA DeepStream Hardware Acceleration**:
-   For maximum performance, GPU video decoding, and sub-millisecond scaling using DeepStream, refer to the [DeepStream SDK Directory](file:///Users/ajmunna/Desktop/Workspace/TDI%20WorkSpace/Ha-Meem%20Group/ha_meem_ai_surveillance/cpp_deepstream_pipeline/README.md) for startup, C++, and Python pipeline running instructions.
-
-5. **Other Components**:
-
-   - **API Server**: `py -m apps.api_server.main`
-   - **WhatsApp Bot**: `py -m apps.alert_bot.whatsapp_bot`
+For complete startup, C++ compilation/running, and Python hybrid pipeline execution instructions, refer to:
+- **Python DeepStream Pipeline**: [README.md](file:///Users/ajmunna/Desktop/Workspace/TDI%20WorkSpace/Ha-Meem%20Group/ha_meem_ai_surveillance/python_deepstream_pipeline/README.md)
+- **C++ Native Pipeline**: [README.md](file:///Users/ajmunna/Desktop/Workspace/TDI%20WorkSpace/Ha-Meem%20Group/ha_meem_ai_surveillance/cpp_deepstream_pipeline/README.md)
+- **System Profiling & Benchmarking**: [instruction.md](file:///Users/ajmunna/Desktop/Workspace/TDI%20WorkSpace/Ha-Meem%20Group/ha_meem_ai_surveillance/instruction.md)

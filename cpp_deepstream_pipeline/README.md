@@ -160,6 +160,7 @@ cd /app/cpp_deepstream_pipeline/custom_parser
 # 2. Compile the SCRFD Bounding Box Parser
 g++ -shared -fPIC -o libnvdsinfer_custom_impl_scrfd.so \
     nvdsinfer_custom_parser_scrfd.cpp \
+    -Iinclude \
     -I/opt/nvidia/deepstream/deepstream/sources/includes \
     -I/usr/local/cuda/include \
     -O3 -std=c++17
@@ -167,6 +168,7 @@ g++ -shared -fPIC -o libnvdsinfer_custom_impl_scrfd.so \
 # 3. Compile the AdaFace Face Recognition/Matching Parser
 g++ -shared -fPIC -o libnvdsinfer_custom_impl_adaface.so \
     nvdsinfer_custom_parser_adaface.cpp \
+    -Iinclude \
     -I/opt/nvidia/deepstream/deepstream/sources/includes \
     -I/usr/local/cuda/include \
     -O3 -std=c++17

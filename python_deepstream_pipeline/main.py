@@ -278,11 +278,11 @@ def main():
     streammux.set_property("gpu-id", 0)
     streammux.set_property("nvbuf-memory-type", 0)  # CUDA Device memory (NVMM)
 
-    pgie.set_property("config-file-path", os.path.abspath("cpp_deepstream_pipeline/configs/config_infer_primary.txt"))
+    pgie.set_property("config-file-path", os.path.abspath("python_deepstream_pipeline/configs/config_infer_primary.txt"))
     pgie.set_property("unique-id", 1)
     pgie.set_property("gpu-id", 0)
 
-    sgie.set_property("config-file-path", os.path.abspath("cpp_deepstream_pipeline/configs/config_infer_secondary.txt"))
+    sgie.set_property("config-file-path", os.path.abspath("python_deepstream_pipeline/configs/config_infer_secondary.txt"))
     sgie.set_property("process-mode", 2)  # Secondary Mode
     sgie.set_property("unique-id", 2)
     sgie.set_property("gpu-id", 0)
@@ -290,7 +290,7 @@ def main():
     tracker.set_property("tracker-width", 640)
     tracker.set_property("tracker-height", 384)
     tracker.set_property("ll-lib-file", "/opt/nvidia/deepstream/deepstream/lib/libnvds_nvmultiobjecttracker.so")
-    tracker.set_property("ll-config-file", os.path.abspath("cpp_deepstream_pipeline/configs/config_tracker_NvDCF_perf.yml"))
+    tracker.set_property("ll-config-file", os.path.abspath("python_deepstream_pipeline/configs/config_tracker_NvDCF_perf.yml"))
     tracker.set_property("gpu-id", 0)
 
     # Configure grid layout inside tiler
@@ -367,7 +367,53 @@ def main():
     # 7. Initialize Face Recognition Databases & Per-Camera Pipeline States
     gallery_path = config['dataset']['gallery_embeddings']
     print(f"[INFO] Loading gallery embeddings from: {gallery_path}")
-    gallery_embeddings = np.load(gallery_path, allow_pickle=True).item()
+    gallery_embeddings = None
+    if os.path.exists(gallery_path) and gallery_path.endswith('.npy'):
+        try:
+            gallery_embeddings = np.load(gallery_path, allow_pickle=True).item()
+        except Exception as e:
+            print(f"[WARNING] Failed to load .npy gallery: {e}")
+            
+    if gallery_embeddings is None:
+        txt_paths = [
+            "python_deepstream_pipeline/configs/gallery_embeddings.txt",
+            "configs/gallery_embeddings.txt",
+            "gallery_embeddings.txt",
+            "/app/python_deepstream_pipeline/configs/gallery_embeddings.txt",
+            "/app/cpp_deepstream_pipeline/configs/gallery_embeddings.txt",
+            "/app/configs/gallery_embeddings.txt"
+        ]
+        if gallery_path.endswith('.npy'):
+            txt_paths.insert(0, gallery_path[:-4] + '.txt')
+            
+        for path in txt_paths:
+            if os.path.exists(path):
+                print(f"[INFO] Loading gallery embeddings from text file fallback: {path}")
+                try:
+                    gallery_embeddings = {}
+                    with open(path, 'r') as f:
+                        for line in f:
+                            line = line.strip()
+                            if not line:
+                                continue
+                            parts = line.split()
+                            person_id = parts[0]
+                            emb = np.array([float(x) for x in parts[1:]], dtype=np.float32)
+                            if emb.shape[0] == 512:
+                                if person_id not in gallery_embeddings:
+                                    gallery_embeddings[person_id] = []
+                                gallery_embeddings[person_id].append(emb)
+                    if gallery_embeddings:
+                        print(f"[SUCCESS] Loaded {len(gallery_embeddings)} identities from text database.")
+                        break
+                except Exception as e:
+                    print(f"[WARNING] Failed to parse text gallery {path}: {e}")
+                    gallery_embeddings = None
+                    
+    if not gallery_embeddings:
+        print("[ERROR] Could not load any gallery embeddings database (.npy or .txt).")
+        return
+
     face_db = FaceDatabase(gallery_embeddings)
 
     aggregators = {}

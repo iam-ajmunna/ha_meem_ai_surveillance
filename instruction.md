@@ -1,6 +1,6 @@
 # 📊 Surveillance Pipeline Profiler Instructions
 
-This guide provides instructions on how to use the custom benchmarking scripts to profile the performance of both the traditional Python/OpenCV pipeline and the hardware-accelerated DeepStream pipeline.
+This guide provides instructions on how to use the custom benchmarking scripts to profile the performance of the hardware-accelerated NVIDIA DeepStream pipelines.
 
 ---
 
@@ -8,8 +8,7 @@ This guide provides instructions on how to use the custom benchmarking scripts t
 
 | Profiler Script | Target Architecture | Key Metrics Tracked | Output Report |
 | :--- | :--- | :--- | :--- |
-| **`system_profiler_traditional.py`** | Traditional Python threading (multiple `CameraWorker` threads, `io-worker`) | Process & Thread-Level CPU %, Global Process Memory, Host GPU Utilization & VRAM | `performance_traditional.md` |
-| **`system_profiler_deepstream.py`** | Hardware-accelerated NVIDIA DeepStream C++ Pipeline (`deepstream-app`) | Host Process CPU/RAM, Detailed GPU Core %, VRAM, NVDEC (Decoder), NVENC (Encoder), Temp | `performance_deepstream.md` |
+| **`system_profiler_deepstream.py`** | Hardware-accelerated NVIDIA DeepStream Pipeline (`deepstream-app` or Python bindings) | Host Process CPU/RAM, Detailed GPU Core %, VRAM, NVDEC (Decoder), NVENC (Encoder), Temp | `performance_deepstream.md` |
 
 ---
 
@@ -21,57 +20,16 @@ Both scripts rely on standard python modules and `psutil`. Before running, ensur
 pip install psutil
 ```
 
-Ensure both scripts have execution permissions:
+Ensure the profiler script has execution permissions:
 ```bash
-chmod +x system_profiler_traditional.py system_profiler_deepstream.py
+chmod +x system_profiler_deepstream.py
 ```
 
 ---
 
 ## 🚀 How to Run the Profilers
 
-### 1. Traditional Pipeline Profiler (`system_profiler_traditional.py`)
-
-Run this profiler when benchmarking the CPU-based Python/OpenCV pipeline. Because the profiler has a built-in auto-detection/wait feature, it can be started either **before** or **after** the pipeline is launched.
-
-#### Step-by-Step Running Sequence:
-1. **Open a separate terminal window/tab** (do not run it in the same terminal as the pipeline since both run interactively).
-2. **Activate your python environment** (e.g., conda environment `mlvision`):
-   ```bash
-   conda activate mlvision
-   ```
-3. **Start the profiler** (it will block and wait for the pipeline process to start):
-   ```bash
-   python system_profiler_traditional.py
-   ```
-4. **In your primary terminal, start the traditional pipeline** (as detailed in the root [README.md](file:///home/ajmunna/Workspace/TDI%20Workspace/Munna/ha_meem_ai_surveillance/README.md)):
-   ```bash
-   # Option A: Single camera / entry pipeline
-   py -m apps.entry_pipeline.main
-   
-   # Option B: Multi-camera grid pipeline
-   py -m apps.multi_pipeline.main
-   ```
-5. As soon as the pipeline starts, the profiler will detect the `main.py` entry point, begin sampling metrics, and output the performance report to `performance_traditional.md` when the duration (default: 60s) completes.
-
-*(Alternatively, if the pipeline is already running, starting the profiler in step 3 will immediately attach to it and begin profiling).*
-
-#### Command Examples:
-```bash
-# Run with default settings (Search for 'main.py', sample for 60s, output to performance_traditional.md)
-python system_profiler_traditional.py
-
-# Specify custom search pattern if your entry point script has a different name
-python system_profiler_traditional.py --search entry_pipeline.py
-
-# Profile a specific process directly using its Process ID (PID)
-python system_profiler_traditional.py --pid 12345 --duration 30
-
-# Specify custom output path
-python system_profiler_traditional.py --output benchmarks/my_traditional_run.md
-```
-
-### 2. DeepStream Pipeline Profiler (`system_profiler_deepstream.py`)
+### DeepStream Pipeline Profiler (`system_profiler_deepstream.py`)
 
 Run this profiler when benchmarking the hardware-accelerated NVIDIA DeepStream pipeline. 
 
@@ -87,7 +45,7 @@ Run this profiler when benchmarking the hardware-accelerated NVIDIA DeepStream p
      ```
    * **To profile the Custom Python Pipeline (`main.py`)**:
      ```bash
-     python system_profiler_deepstream.py --search deepstream_pipeline/main.py
+     python system_profiler_deepstream.py --search python_deepstream_pipeline/main.py
      ```
 3. **In your primary terminal, start and run the DeepStream pipeline**:
     - Enable display forwarding on your host and start the container:
@@ -102,11 +60,11 @@ Run this profiler when benchmarking the hardware-accelerated NVIDIA DeepStream p
     - Inside the container, launch the target application:
       * **For C++ App**:
         ```bash
-        cd /app/deepstream-sdk-map/configs && deepstream-app -c ha_meem_master_config.txt
+        cd /app/cpp_deepstream_pipeline/configs && deepstream-app -c ha_meem_master_config.txt
         ```
       * **For Python Pipeline**:
         ```bash
-        python3 /app/apps/deepstream_pipeline/main.py
+        python3 /app/python_deepstream_pipeline/main.py
         ```
 4. The host profiler will automatically detect the running process, map it to the Docker Container ID, record performance metrics, and output the report to `performance_deepstream.md` when the duration completes.
 
