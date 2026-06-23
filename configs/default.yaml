@@ -1,0 +1,21 @@
+# Default system settings
+# Defines the core environment, processing parameters, and model paths
+
+pipeline:
+  device: cuda     # Target compute device ('cuda' for GPU or 'cpu' for testing)
+  precision: fp32  # Inference precision ('fp16' or 'fp32'). fp16 requires tensorrt.
+  batch_size: 15   # Maximum batch size for AdaFace embedding extraction
+
+logging:
+  level: INFO      # System log severity level (DEBUG, INFO, WARNING, ERROR)
+
+models:
+  scrfd_onnx: models/scrfd_10g_bnkps.onnx  # Path to the SCRFD Face Detection ONNX model
+  adaface_onnx: models/adaface.onnx        # Path to the AdaFace Recognition ONNX model
+
+# Dataset paths — used by apps/dataset_tools to extract faces and build the gallery.
+# Ensure these paths point to your actual data storage outside the repository.
+dataset:
+  raw_frames: data/raw_frames
+  aligned_faces: data/aligned_faces_80px_aligned
+  gallery_embeddings: data/gallery_embeddings_80px_faiss.npy

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+/.venv
+/venv/
+/venv.bak/
+
+# ENV
+.env
+.env.*
+!.env.example
+
+# Modes & Data
+models/*
+!/models/README.md
+/data/*
+!/data/README.md
+
+# Others
+/logs/
+/snapshots/
+/trt_cache/
+/report_assets/
+/whatsapp_session/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+.gemini/
+.agents/
